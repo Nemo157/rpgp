@@ -107,6 +107,7 @@ impl Signature {
     /// Verifies a certificate siganture type.
     pub fn verify_certificate(
         &self,
+        signing_key: &impl PublicKeyTrait,
         key: &impl PublicKeyTrait,
         tag: Tag,
         id: &impl Serialize,
@@ -114,11 +115,11 @@ impl Signature {
         debug!("verifying certificate {:#?}", self);
 
         if let Some(issuer) = self.issuer() {
-            if &key.key_id() != issuer {
+            if &signing_key.key_id() != issuer {
                 // TODO: should this be an actual error?
                 warn!(
                     "validating certificate with a non matching Key ID {:?} != {:?}",
-                    &key.key_id(),
+                    &signing_key.key_id(),
                     issuer
                 );
             }
@@ -168,7 +169,7 @@ impl Signature {
             "invalid signed hash value"
         );
 
-        key.verify_signature(self.config.hash_alg, hash, &self.signature)
+        signing_key.verify_signature(self.config.hash_alg, hash, &self.signature)
     }
 
     /// Verifies a key binding.

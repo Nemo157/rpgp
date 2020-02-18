@@ -37,7 +37,7 @@ impl SignedUser {
         ensure!(!self.signatures.is_empty(), "no signatures found");
 
         for signature in &self.signatures {
-            signature.verify_certificate(key, Tag::UserId, &self.id)?;
+            signature.verify_certificate(key, key, Tag::UserId, &self.id)?;
         }
 
         Ok(())
@@ -91,7 +91,7 @@ impl SignedUserAttribute {
         ensure!(!self.signatures.is_empty(), "no signatures found");
 
         for signature in &self.signatures {
-            signature.verify_certificate(key, Tag::UserAttribute, &self.attr)?;
+            signature.verify_certificate(key, key, Tag::UserAttribute, &self.attr)?;
         }
 
         Ok(())
